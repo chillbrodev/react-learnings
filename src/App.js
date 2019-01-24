@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import Table from "./Table";
 import "./App.css";
 import Form from "./Form";
-import AppApi from "./Api";
 
 class App extends Component {
   state = {
@@ -25,15 +24,13 @@ class App extends Component {
   render() {
     return (
       <div className="container">
-        {/* <h1>Data</h1>
+        <h1>Data</h1>
         <Table
           characterData={this.state.characters}
           removeCharacter={this.removeCharacter}
         />
         <h1>Submit Form</h1>
-        <Form handleSubmit={this.handleSubmit} /> */}
-
-        <AppApi />
+        <Form handleSubmit={this.handleSubmit} />
       </div>
     );
   }
