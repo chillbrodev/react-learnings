@@ -30,7 +30,8 @@ class Game extends Component {
   state = {
     gameStatus: Game.gameStatusEnum.new, //new, playing, won, lost
     remainingSeconds: this.props.initialSeconds,
-    selectedIds: []
+    selectedIds: [],
+    currentSum: 0
   }
 
   challengeNumbers = Array.from({ length: this.props.challengeSize }).map(() =>
@@ -70,9 +71,14 @@ class Game extends Component {
           return null
         }
         const newSelectedIds = [...prevState.selectedIds, numberIndex]
+        const currSum = newSelectedIds.reduce(
+          (acc, curr) => acc + this.challengeNumbers[curr],
+          0
+        )
         return {
           selectedIds: newSelectedIds,
-          gameStatus: this.calcGameStatus(newSelectedIds)
+          gameStatus: this.calcGameStatus(newSelectedIds),
+          currentSum: currSum
         }
       },
       () => {
@@ -97,7 +103,7 @@ class Game extends Component {
   }
 
   render() {
-    const { gameStatus, remainingSeconds } = this.state
+    const { gameStatus, remainingSeconds, currentSum } = this.state
 
     return (
       <div className='game'>
@@ -105,12 +111,15 @@ class Game extends Component {
           Pick {this.props.answerSize} numbers that sum to the target in{' '}
           {this.props.initialSeconds} seconds
         </div>
+        Target Sum:
         <div
           className='target'
           style={{ backgroundColor: Game.bgColors[gameStatus] }}
         >
           {gameStatus === Game.gameStatusEnum.new ? '?' : this.target}
         </div>
+        Current Sum:
+        <div className='target'>{currentSum}</div>
         <div className='challenge-numbers'>
           {this.challengeNumbers.map((value, index) => (
             <Number
