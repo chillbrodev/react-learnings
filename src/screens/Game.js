@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import './App.css'
-import Number from './Number'
+import Number from '../Number'
 
-import Timer from './Timer'
+import Timer from '../Timer'
 import { sampleSize, sum } from 'lodash'
 // Created via https://medium.freecodecamp.org/do-you-want-to-learn-more-about-react-lets-build-and-then-play-a-game-218e0da5be44
 const randomNumberBetween = (min, max) => {
@@ -41,9 +40,7 @@ class Game extends Component {
   target = sum(sampleSize(this.challengeNumbers, this.props.answerSize))
 
   componentDidMount() {
-    if (this.props.autoPlay) {
-      this.startGame()
-    }
+    this.startGame()
   }
 
   isNumberAvailable = numberIndex =>
@@ -108,8 +105,8 @@ class Game extends Component {
     return (
       <div className='game'>
         <div className='help'>
-          Pick {this.props.answerSize} numbers that sum to the target in{' '}
-          {this.props.initialSeconds} seconds
+          Sum up as many numbers in {this.props.initialSeconds}. Streaks will
+          result in bonus points!
         </div>
         Target Sum:
         <div
