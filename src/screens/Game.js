@@ -10,34 +10,38 @@ const randomNumberBetween = (min, max) => {
 }
 
 class Game extends Component {
+  constructor(props) {
+    super(props)
+    this.challengeNumbers = []
+    this.target = '?'
+  }
+
   static bgColors = {
     new: 'lightblue',
     playing: 'deepskyblue',
     won: 'lightgreen',
-    lost: 'lightcoral'
+    lost: 'lightcoral',
+    streak: 'darkorange'
   }
 
   static gameStatusEnum = {
     new: 'new',
     won: 'won',
     playing: 'playing',
-    lost: 'lost'
+    lost: 'lost',
+    match: 'match',
+    miss: 'miss'
   }
 
   static getColorFromStatus = () => Game.bgColors[this.state.gameStatus]
 
   state = {
     gameStatus: Game.gameStatusEnum.new, //new, playing, won, lost
+    streakCount: 0,
     remainingSeconds: this.props.initialSeconds,
     selectedIds: [],
     currentSum: 0
   }
-
-  challengeNumbers = Array.from({ length: this.props.challengeSize }).map(() =>
-    randomNumberBetween(...this.props.challengeRange)
-  )
-
-  target = sum(sampleSize(this.challengeNumbers, this.props.answerSize))
 
   componentDidMount() {
     this.startGame()
@@ -47,6 +51,12 @@ class Game extends Component {
     this.state.selectedIds.indexOf(numberIndex) === -1
 
   startGame = () => {
+    this.challengeNumbers = Array.from({
+      length: this.props.challengeSize
+    }).map(() => randomNumberBetween(...this.props.challengeRange))
+
+    this.target = sum(sampleSize(this.challengeNumbers, this.props.answerSize))
+
     this.setState({ gameStatus: Game.gameStatusEnum.playing }, () => {
       this.intervalId = setInterval(() => {
         this.setState(prevState => {
@@ -61,6 +71,17 @@ class Game extends Component {
     })
   }
 
+  resetGame = () => {
+    const { remainingSeconds } = this.state
+    this.setState({
+      gameStatus: Game.gameStatusEnum.playing,
+      remainingSeconds: remainingSeconds,
+      selectedIds: [],
+      currentSum: 0
+    })
+    this.startGame()
+  }
+
   selectNumber = numberIndex => {
     this.setState(
       prevState => {
@@ -72,10 +93,19 @@ class Game extends Component {
           (acc, curr) => acc + this.challengeNumbers[curr],
           0
         )
+        const gameStatus = this.calcGameStatus(newSelectedIds)
+        let newStreakCount = prevState.streakCount
+        if (gameStatus === Game.gameStatusEnum.match) {
+          newStreakCount = prevState.streakCount += 1
+        } else if (gameStatus === Game.gameStatusEnum.miss) {
+          newStreakCount = 0
+        }
+
         return {
           selectedIds: newSelectedIds,
-          gameStatus: this.calcGameStatus(newSelectedIds),
-          currentSum: currSum
+          gameStatus: gameStatus,
+          currentSum: currSum,
+          streakCount: newStreakCount
         }
       },
       () => {
@@ -93,21 +123,32 @@ class Game extends Component {
     )
     if (newSelectedIds.length !== this.props.answerSize) {
       return Game.gameStatusEnum.playing
+    } else {
+      console.log(`Matched: ${this.props.answerSize} numbers`)
+      if (sumSelected === this.target) {
+        console.log('Streak Increase')
+        return Game.gameStatusEnum.match
+      } else {
+        console.log('Streak Reset')
+        return Game.gameStatusEnum.miss
+      }
     }
-    return sumSelected === this.target
-      ? Game.gameStatusEnum.won
-      : Game.gameStatusEnum.lost
   }
 
   render() {
-    const { gameStatus, remainingSeconds, currentSum } = this.state
+    const { gameStatus, remainingSeconds, currentSum, streakCount } = this.state
+    let streakColor
+    if (
+      [Game.gameStatusEnum.match, Game.gameStatusEnum.miss].includes(gameStatus)
+    ) {
+      this.resetGame()
+    }
 
+    if (streakCount >= 3) {
+      streakColor = Game.bgColors.streak
+    }
     return (
       <div className='game'>
-        <div className='help'>
-          Sum up as many numbers in {this.props.initialSeconds}. Streaks will
-          result in bonus points!
-        </div>
         Target Sum:
         <div
           className='target'
@@ -117,6 +158,14 @@ class Game extends Component {
         </div>
         Current Sum:
         <div className='target'>{currentSum}</div>
+        <div>
+          {gameStatus === Game.gameStatusEnum.playing && (
+            <Timer value={remainingSeconds} />
+          )}
+        </div>
+        <div className='streak-count' style={{ color: streakColor }}>
+          Streak count: {streakCount}
+        </div>
         <div className='challenge-numbers'>
           {this.challengeNumbers.map((value, index) => (
             <Number
@@ -134,14 +183,6 @@ class Game extends Component {
           {gameStatus === Game.gameStatusEnum.new && (
             <button onClick={this.startGame}>Start</button>
           )}
-
-          {gameStatus === Game.gameStatusEnum.playing && (
-            <Timer value={remainingSeconds} />
-          )}
-
-          {[Game.gameStatusEnum.won, Game.gameStatusEnum.lost].includes(
-            gameStatus
-          ) && <button onClick={this.props.onPlayAgain}>Play Again</button>}
         </div>
       </div>
     )
