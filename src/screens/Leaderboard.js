@@ -6,9 +6,11 @@ class Leaderboard extends Component {
       <div>
         Welcome to the Leaderboard
         <br />
-        <button className='btn' onClick={this.props.showTitleComponent}>
-          Go to Menu
-        </button>
+        <div className='footer'>
+          <button className='btn' onClick={this.props.showTitleComponent}>
+            Go to Menu
+          </button>
+        </div>
       </div>
     )
   }

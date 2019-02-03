@@ -8,13 +8,15 @@ class Title extends Component {
         time limit. Sums made in a row result in a streak. The longer the streak
         the higher the score multiplier! Are you ready?
         <br />
-        <button className='btn' onClick={this.props.showGameComponent}>
-          Play Game
-        </button>
-        <br />
-        <button className='btn' onClick={this.props.showLeaderboardComponent}>
-          Show Leaderboard
-        </button>
+        <div className='footer'>
+          <button className='btn' onClick={this.props.showGameComponent}>
+            Play Game
+          </button>
+          <br />
+          <button className='btn' onClick={this.props.showLeaderboardComponent}>
+            Show Leaderboard
+          </button>
+        </div>
       </div>
     )
   }

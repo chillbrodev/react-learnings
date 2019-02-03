@@ -10,7 +10,7 @@ class App extends Component {
   state = {
     displayGame: false,
     displayLeader: false,
-    displayGameOver: false
+    displayGameOver: true
   }
 
   showGameComponent = () => {

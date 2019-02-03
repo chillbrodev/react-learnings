@@ -6,13 +6,15 @@ class Gameover extends Component {
       <div>
         Score screen:
         <br />
-        <button className='btn' onClick={this.props.showTitleComponent}>
-          Go to Menu
-        </button>
-        <br />
-        <button className='btn' onClick={this.props.showLeaderboardComponent}>
-          Show Leaderboard
-        </button>
+        <div className='footer'>
+          <button className='btn' onClick={this.props.showLeaderboardComponent}>
+            Show Leaderboard
+          </button>
+          <br />
+          <button className='btn' onClick={this.props.showTitleComponent}>
+            Go to Menu
+          </button>
+        </div>
       </div>
     )
   }
