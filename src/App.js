@@ -4,11 +4,13 @@ import Game from './screens/Game'
 import newId from './utils/newId'
 import Leaderboard from './screens/Leaderboard'
 import './App.css'
+import Gameover from './screens/Gameover'
 
 class App extends Component {
   state = {
     displayGame: false,
-    displayLeader: false
+    displayLeader: false,
+    displayGameOver: false
   }
 
   showGameComponent = () => {
@@ -24,8 +26,26 @@ class App extends Component {
     })
   }
 
+  showGameOverComponent = () => {
+    console.log('Display Gameover/Score Screen')
+    this.setState({
+      displayGameOver: !this.state.displayGameOver,
+      displayGame: false,
+      displayLeader: false
+    })
+  }
+
+  showTitleComponent = () => {
+    console.log('Display Title Screen')
+    this.setState({
+      displayGame: false,
+      displayLeader: false,
+      displayGameOver: false
+    })
+  }
+
   render() {
-    const { displayGame, displayLeader } = this.state
+    const { displayGame, displayLeader, displayGameOver } = this.state
     let screen
     if (displayGame) {
       screen = (
@@ -33,12 +53,20 @@ class App extends Component {
           key={newId()}
           challengeSize={6}
           challengeRange={[2, 9]}
-          initialSeconds={60}
+          initialSeconds={10}
           answerSize={4}
+          gameOver={this.showGameOverComponent}
         />
       )
     } else if (displayLeader) {
-      screen = <Leaderboard />
+      screen = <Leaderboard showTitleComponent={this.showTitleComponent} />
+    } else if (displayGameOver) {
+      screen = (
+        <Gameover
+          showTitleComponent={this.showTitleComponent}
+          showLeaderboardComponent={this.showLeaderboardComponent}
+        />
+      )
     } else {
       screen = (
         <Title

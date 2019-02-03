@@ -19,16 +19,14 @@ class Game extends Component {
   static bgColors = {
     new: 'lightblue',
     playing: 'deepskyblue',
-    won: 'lightgreen',
-    lost: 'lightcoral',
+    over: 'lightgreen',
     streak: 'darkorange'
   }
 
   static gameStatusEnum = {
     new: 'new',
-    won: 'won',
+    over: 'over',
     playing: 'playing',
-    lost: 'lost',
     match: 'match',
     miss: 'miss'
   }
@@ -36,7 +34,7 @@ class Game extends Component {
   static getColorFromStatus = () => Game.bgColors[this.state.gameStatus]
 
   state = {
-    gameStatus: Game.gameStatusEnum.new, //new, playing, won, lost
+    gameStatus: Game.gameStatusEnum.new,
     streakCount: 0,
     remainingSeconds: this.props.initialSeconds,
     selectedIds: [],
@@ -63,7 +61,7 @@ class Game extends Component {
           const newRemainingSeconds = prevState.remainingSeconds - 1
           if (newRemainingSeconds === 0) {
             clearInterval(this.intervalId)
-            return { gameStatus: Game.gameStatusEnum.lost, remainingSeconds: 0 }
+            return { gameStatus: Game.gameStatusEnum.over, remainingSeconds: 0 }
           }
           return { remainingSeconds: newRemainingSeconds }
         })
@@ -138,6 +136,10 @@ class Game extends Component {
   render() {
     const { gameStatus, remainingSeconds, currentSum, streakCount } = this.state
     let streakColor
+    if (gameStatus === Game.gameStatusEnum.over) {
+      clearInterval(this.intervalId)
+      this.props.gameOver()
+    }
     if (
       [Game.gameStatusEnum.match, Game.gameStatusEnum.miss].includes(gameStatus)
     ) {
@@ -178,11 +180,6 @@ class Game extends Component {
               onClick={this.selectNumber}
             />
           ))}
-        </div>
-        <div className='footer'>
-          {gameStatus === Game.gameStatusEnum.new && (
-            <button onClick={this.startGame}>Start</button>
-          )}
         </div>
       </div>
     )

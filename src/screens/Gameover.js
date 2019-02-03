@@ -1,17 +1,21 @@
 import React, { Component } from 'react'
 
-class Leaderboard extends Component {
+class Gameover extends Component {
   render() {
     return (
       <div>
-        Welcome to the Leaderboard
+        Score screen:
         <br />
         <button className='btn' onClick={this.props.showTitleComponent}>
           Go to Menu
+        </button>
+        <br />
+        <button className='btn' onClick={this.props.showLeaderboardComponent}>
+          Show Leaderboard
         </button>
       </div>
     )
   }
 }
 
-export default Leaderboard
+export default Gameover
