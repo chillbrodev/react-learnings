@@ -35,10 +35,12 @@ class Game extends Component {
 
   state = {
     gameStatus: Game.gameStatusEnum.new,
-    streakCount: 0,
     remainingSeconds: this.props.initialSeconds,
     selectedIds: [],
-    currentSum: 0
+    currentSum: 0,
+    matchCount: 0,
+    streakCount: 0,
+    longestStreak: 0
   }
 
   componentDidMount() {
@@ -93,8 +95,16 @@ class Game extends Component {
         )
         const gameStatus = this.calcGameStatus(newSelectedIds)
         let newStreakCount = prevState.streakCount
+        let newMatchCount = prevState.matchCount
+        let newLongestStreak = prevState.longestStreak
+
         if (gameStatus === Game.gameStatusEnum.match) {
           newStreakCount = prevState.streakCount += 1
+          if (newStreakCount >= prevState.longestStreak) {
+            console.log('Longest Streak Increase')
+            newLongestStreak = prevState.longestStreak += 1
+          }
+          newMatchCount = prevState.matchCount += 1
         } else if (gameStatus === Game.gameStatusEnum.miss) {
           newStreakCount = 0
         }
@@ -103,7 +113,9 @@ class Game extends Component {
           selectedIds: newSelectedIds,
           gameStatus: gameStatus,
           currentSum: currSum,
-          streakCount: newStreakCount
+          streakCount: newStreakCount,
+          matchCount: newMatchCount,
+          longestStreak: newLongestStreak
         }
       },
       () => {
@@ -134,11 +146,18 @@ class Game extends Component {
   }
 
   render() {
-    const { gameStatus, remainingSeconds, currentSum, streakCount } = this.state
+    const {
+      gameStatus,
+      remainingSeconds,
+      currentSum,
+      longestStreak,
+      streakCount,
+      matchCount
+    } = this.state
     let streakColor
     if (gameStatus === Game.gameStatusEnum.over) {
       clearInterval(this.intervalId)
-      this.props.gameOver()
+      this.props.gameOver(matchCount, longestStreak)
     }
     if (
       [Game.gameStatusEnum.match, Game.gameStatusEnum.miss].includes(gameStatus)

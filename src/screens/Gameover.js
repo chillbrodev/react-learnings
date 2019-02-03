@@ -4,7 +4,8 @@ class Gameover extends Component {
   render() {
     return (
       <div>
-        Score screen:
+        Score screen: Score: {this.props.gameScore} Longest Steak:{' '}
+        {this.props.gameStreak}
         <br />
         <div className='footer'>
           <button className='btn' onClick={this.props.showLeaderboardComponent}>

@@ -10,7 +10,7 @@ class App extends Component {
   state = {
     displayGame: false,
     displayLeader: false,
-    displayGameOver: true
+    displayGameOver: false
   }
 
   showGameComponent = () => {
@@ -26,12 +26,14 @@ class App extends Component {
     })
   }
 
-  showGameOverComponent = () => {
+  showGameOverComponent = (score, streak) => {
     console.log('Display Gameover/Score Screen')
     this.setState({
       displayGameOver: !this.state.displayGameOver,
       displayGame: false,
-      displayLeader: false
+      displayLeader: false,
+      gameScore: score,
+      gameStreaks: streak
     })
   }
 
@@ -45,7 +47,13 @@ class App extends Component {
   }
 
   render() {
-    const { displayGame, displayLeader, displayGameOver } = this.state
+    const {
+      displayGame,
+      displayLeader,
+      displayGameOver,
+      gameScore,
+      gameStreaks
+    } = this.state
     let screen
     if (displayGame) {
       screen = (
@@ -53,7 +61,7 @@ class App extends Component {
           key={newId()}
           challengeSize={6}
           challengeRange={[2, 9]}
-          initialSeconds={10}
+          initialSeconds={60}
           answerSize={4}
           gameOver={this.showGameOverComponent}
         />
@@ -65,6 +73,8 @@ class App extends Component {
         <Gameover
           showTitleComponent={this.showTitleComponent}
           showLeaderboardComponent={this.showLeaderboardComponent}
+          gameScore={gameScore}
+          gameStreak={gameStreaks}
         />
       )
     } else {
