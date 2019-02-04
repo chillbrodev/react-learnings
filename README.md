@@ -1,5 +1,11 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Constructed with help of these websites
+
+Inspired by: https://medium.freecodecamp.org/do-you-want-to-learn-more-about-react-lets-build-and-then-play-a-game-218e0da5be44
+
+React State Gotcahs: https://itnext.io/react-setstate-usage-and-gotchas-ac10b4e03d60
+
 ## Available Scripts
 
 In the project directory, you can run:

@@ -3,7 +3,7 @@ import Number from '../Number'
 
 import Timer from '../Timer'
 import { sampleSize, sum } from 'lodash'
-// Created via https://medium.freecodecamp.org/do-you-want-to-learn-more-about-react-lets-build-and-then-play-a-game-218e0da5be44
+
 const randomNumberBetween = (min, max) => {
   const random = Math.random()
   return Math.floor(random * (max - min) + min)
@@ -57,29 +57,28 @@ class Game extends Component {
 
     this.target = sum(sampleSize(this.challengeNumbers, this.props.answerSize))
 
-    this.setState({ gameStatus: Game.gameStatusEnum.playing }, () => {
-      this.intervalId = setInterval(() => {
-        this.setState(prevState => {
-          const newRemainingSeconds = prevState.remainingSeconds - 1
-          if (newRemainingSeconds === 0) {
-            clearInterval(this.intervalId)
-            return { gameStatus: Game.gameStatusEnum.over, remainingSeconds: 0 }
-          }
-          return { remainingSeconds: newRemainingSeconds }
-        })
-      }, 1000)
-    })
-  }
-
-  resetGame = () => {
-    const { remainingSeconds } = this.state
-    this.setState({
-      gameStatus: Game.gameStatusEnum.playing,
-      remainingSeconds: remainingSeconds,
-      selectedIds: [],
-      currentSum: 0
-    })
-    this.startGame()
+    this.setState(
+      {
+        gameStatus: Game.gameStatusEnum.playing,
+        selectedIds: [],
+        currentSum: 0
+      },
+      () => {
+        this.intervalId = setInterval(() => {
+          this.setState(prevState => {
+            const newRemainingSeconds = prevState.remainingSeconds - 1
+            if (newRemainingSeconds === 0) {
+              clearInterval(this.intervalId)
+              return {
+                gameStatus: Game.gameStatusEnum.over,
+                remainingSeconds: 0
+              }
+            }
+            return { remainingSeconds: newRemainingSeconds }
+          })
+        }, 1000)
+      }
+    )
   }
 
   selectNumber = numberIndex => {
@@ -145,26 +144,26 @@ class Game extends Component {
     }
   }
 
-  render() {
-    const {
-      gameStatus,
-      remainingSeconds,
-      currentSum,
-      longestStreak,
-      streakCount,
-      matchCount
-    } = this.state
-    let streakColor
+  componentDidUpdate() {
+    const { gameStatus, longestStreak, matchCount } = this.state
+
     if (gameStatus === Game.gameStatusEnum.over) {
+      console.log('GameOver')
       clearInterval(this.intervalId)
       this.props.gameOver(matchCount, longestStreak)
     }
+
     if (
       [Game.gameStatusEnum.match, Game.gameStatusEnum.miss].includes(gameStatus)
     ) {
-      this.resetGame()
+      console.log('Match or Miss: Start Game')
+      this.startGame()
     }
+  }
 
+  render() {
+    const { gameStatus, remainingSeconds, currentSum, streakCount } = this.state
+    let streakColor
     if (streakCount >= 3) {
       streakColor = Game.bgColors.streak
     }
