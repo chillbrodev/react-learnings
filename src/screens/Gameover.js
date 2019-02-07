@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import axios from 'axios'
 
 class Gameover extends Component {
   constructor(props) {
@@ -60,7 +59,7 @@ class Gameover extends Component {
               onChange={this.handleUserNameChange}
             />
           </label>
-          <button className='btn' onClick={this.handleFormSubmit}>
+          <button type='submit' className='btn' onClick={this.handleFormSubmit}>
             Submit
           </button>
         </form>
