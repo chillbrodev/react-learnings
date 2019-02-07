@@ -162,7 +162,13 @@ class Game extends Component {
   }
 
   render() {
-    const { gameStatus, remainingSeconds, currentSum, streakCount } = this.state
+    const {
+      gameStatus,
+      remainingSeconds,
+      currentSum,
+      streakCount,
+      matchCount
+    } = this.state
     let streakColor
     if (streakCount >= 3) {
       streakColor = Game.bgColors.streak
@@ -186,6 +192,7 @@ class Game extends Component {
         <div className='streak-count' style={{ color: streakColor }}>
           Streak count: {streakCount}
         </div>
+        <div className='score-count'>Score: {matchCount}</div>
         <div className='challenge-numbers'>
           {this.challengeNumbers.map((value, index) => (
             <Number
