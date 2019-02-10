@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import axios from 'axios'
+import API_URLS from '../utils/apiUrls'
 
 class Gameover extends Component {
   constructor(props) {
@@ -21,7 +23,25 @@ class Gameover extends Component {
     UserName: ${this.state.userName}
     TotalScore: ${this.state.finalScore}`)
     event.preventDefault()
-    this.props.showTitleComponent()
+    axios
+      .put(
+        API_URLS.DEV.SAVE_SCORE_API,
+        {
+          userName: this.state.userName,
+          score: this.state.finalScore
+        },
+        {
+          headers: {
+            Accept: 'application/json'
+          }
+        }
+      )
+      .then(() => {
+        this.props.showTitleComponent()
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   componentDidMount() {

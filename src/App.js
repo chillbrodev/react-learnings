@@ -61,7 +61,7 @@ class App extends Component {
           key={newId()}
           challengeSize={6}
           challengeRange={[2, 9]}
-          initialSeconds={15}
+          initialSeconds={5}
           answerSize={4}
           gameOver={this.showGameOverComponent}
         />

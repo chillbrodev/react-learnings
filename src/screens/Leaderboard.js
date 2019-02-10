@@ -8,7 +8,7 @@ class Leaderboard extends Component {
     super(props)
     this.state = {
       userScores: {
-        users: [
+        data: [
           {
             userName: '',
             score: 0
@@ -19,7 +19,8 @@ class Leaderboard extends Component {
   }
 
   componentDidMount() {
-    axios.get(API_URLS.FETCH_SCORES_API).then(res => {
+    axios.get(API_URLS.DEV.ALL_SCORES_API).then(res => {
+      console.log(JSON.stringify(res.data))
       const userScores = res.data
       this.setState({ userScores })
     })
@@ -27,7 +28,7 @@ class Leaderboard extends Component {
 
   render() {
     const { userScores } = this.state
-    const tableRows = userScores.users
+    const tableRows = userScores.data
       .filter(item => item.score > 0)
       .map(item => {
         return (
