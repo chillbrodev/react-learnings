@@ -10,7 +10,8 @@ class App extends Component {
   state = {
     displayGame: false,
     displayLeader: false,
-    displayGameOver: false
+    displayGameOver: false,
+    answerSize: 4
   }
 
   showGameComponent = () => {
@@ -61,16 +62,22 @@ class App extends Component {
           key={newId()}
           challengeSize={6}
           challengeRange={[2, 9]}
-          initialSeconds={5}
-          answerSize={4}
+          initialSeconds={60}
+          answerSize={this.state.answerSize}
           gameOver={this.showGameOverComponent}
         />
       )
     } else if (displayLeader) {
-      screen = <Leaderboard showTitleComponent={this.showTitleComponent} />
+      screen = (
+        <Leaderboard
+          gameId={newId()}
+          showTitleComponent={this.showTitleComponent}
+        />
+      )
     } else if (displayGameOver) {
       screen = (
         <Gameover
+          gameId={newId()}
           showTitleComponent={this.showTitleComponent}
           showLeaderboardComponent={this.showLeaderboardComponent}
           gameScore={gameScore}
@@ -81,6 +88,7 @@ class App extends Component {
       screen = (
         <Title
           gameId={newId()}
+          answerSize={this.state.answerSize}
           showGameComponent={this.showGameComponent}
           showLeaderboardComponent={this.showLeaderboardComponent}
         />
