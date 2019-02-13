@@ -26,6 +26,12 @@ class Leaderboard extends Component {
     })
   }
 
+  compare(userA, userB) {
+    if (userA.score < userB.score) return -1
+    if (userA.score > userB.score) return 1
+    return 0
+  }
+
   render() {
     const { userScores } = this.state
     const tableRows = userScores.data
@@ -42,7 +48,7 @@ class Leaderboard extends Component {
       })
     return (
       <div>
-        Welcome to the Leaderboard
+        <div className='header'>Sum It Up Leaderboard</div>
         <br />
         <table>{tableRows}</table>
         <div className='footer'>

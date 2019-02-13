@@ -131,7 +131,12 @@ class Game extends Component {
       0
     )
     if (newSelectedIds.length !== this.props.answerSize) {
-      return Game.gameStatusEnum.playing
+      if (sumSelected === this.target) {
+        console.log('Streak Increase')
+        return Game.gameStatusEnum.match
+      } else {
+        return Game.gameStatusEnum.playing
+      }
     } else {
       console.log(`Matched: ${this.props.answerSize} numbers`)
       if (sumSelected === this.target) {
@@ -175,6 +180,17 @@ class Game extends Component {
     }
     return (
       <div className='game'>
+        <div className='header'>
+          <div className='score-count'>Score: {matchCount}</div>
+
+          {gameStatus === Game.gameStatusEnum.playing && (
+            <Timer value={remainingSeconds} />
+          )}
+
+          <div className='streak-count' style={{ color: streakColor }}>
+            Streak: {streakCount}
+          </div>
+        </div>
         Target Sum:
         <div
           className='target'
@@ -184,15 +200,6 @@ class Game extends Component {
         </div>
         Current Sum:
         <div className='target'>{currentSum}</div>
-        <div>
-          {gameStatus === Game.gameStatusEnum.playing && (
-            <Timer value={remainingSeconds} />
-          )}
-        </div>
-        <div className='streak-count' style={{ color: streakColor }}>
-          Streak count: {streakCount}
-        </div>
-        <div className='score-count'>Score: {matchCount}</div>
         <div className='challenge-numbers'>
           {this.challengeNumbers.map((value, index) => (
             <Number
