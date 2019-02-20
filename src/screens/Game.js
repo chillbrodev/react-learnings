@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Number from '../Number'
-
+import Rules from './Rules'
 import Timer from '../Timer'
 import { sampleSize, sum } from 'lodash'
 
@@ -44,13 +44,17 @@ class Game extends Component {
   }
 
   componentDidMount() {
-    this.startGame()
+    // this.startGame()
+    this.setState({ showRules: true })
   }
 
   isNumberAvailable = numberIndex =>
     this.state.selectedIds.indexOf(numberIndex) === -1
 
   startGame = () => {
+    this.setState({
+      showRules: false
+    })
     this.challengeNumbers = Array.from({
       length: this.props.challengeSize
     }).map(() => randomNumberBetween(...this.props.challengeRange))
@@ -172,47 +176,60 @@ class Game extends Component {
       remainingSeconds,
       currentSum,
       streakCount,
-      matchCount
+      matchCount,
+      showRules
     } = this.state
     let streakColor
     if (streakCount >= 3) {
       streakColor = Game.bgColors.streak
     }
     return (
-      <div className='game'>
-        <div className='header'>
-          <div className='score-count'>Score: {matchCount}</div>
+      <div>
+        {showRules && (
+          <Rules
+            answerSize={this.props.answerSize}
+            startGame={this.startGame}
+          />
+        )}
+        {!showRules && (
+          <div className='game'>
+            <div className='header'>
+              <div className='score-count'>Score: {matchCount}</div>
 
-          {gameStatus === Game.gameStatusEnum.playing && (
-            <Timer value={remainingSeconds} />
-          )}
+              {gameStatus === Game.gameStatusEnum.playing && (
+                <Timer value={remainingSeconds} />
+              )}
 
-          <div className='streak-count' style={{ color: streakColor }}>
-            Streak: {streakCount}
+              <div className='streak-count' style={{ color: streakColor }}>
+                Streak: {streakCount}
+              </div>
+            </div>
+            Target Sum:
+            <div
+              className='target'
+              style={{ backgroundColor: Game.bgColors[gameStatus] }}
+            >
+              {gameStatus === Game.gameStatusEnum.new ? '?' : this.target}
+            </div>
+            Current Sum:
+            <div className='target'>{currentSum}</div>
+            <div className='challenge-numbers'>
+              {this.challengeNumbers.map((value, index) => (
+                <Number
+                  key={index}
+                  id={index}
+                  value={
+                    this.state.gameStatus === Game.gameStatusEnum.new
+                      ? '?'
+                      : value
+                  }
+                  clickable={this.isNumberAvailable(index)}
+                  onClick={this.selectNumber}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-        Target Sum:
-        <div
-          className='target'
-          style={{ backgroundColor: Game.bgColors[gameStatus] }}
-        >
-          {gameStatus === Game.gameStatusEnum.new ? '?' : this.target}
-        </div>
-        Current Sum:
-        <div className='target'>{currentSum}</div>
-        <div className='challenge-numbers'>
-          {this.challengeNumbers.map((value, index) => (
-            <Number
-              key={index}
-              id={index}
-              value={
-                this.state.gameStatus === Game.gameStatusEnum.new ? '?' : value
-              }
-              clickable={this.isNumberAvailable(index)}
-              onClick={this.selectNumber}
-            />
-          ))}
-        </div>
+        )}
       </div>
     )
   }
